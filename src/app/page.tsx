@@ -2,7 +2,7 @@
 import Card from "@/components/Card/Card";
 import FormField from "@/components/FormField/FormField";
 import Loader from "@/components/Loader/Loader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +12,32 @@ export default function Home() {
   const [searchedResults, setSearchedResults] = useState<any[]>([]);
   let searchTimeout:any
 
+
+  // const fetchPosts = async () => {
+  //   setLoading(true);
+
+  //   try {
+  //     const response = await fetch('api/dalle', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       setAllPosts(result.data.reverse());
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, []);
 
   const handleSearchChange = (e:any) => {
     setSearchText(e.target.value);
@@ -50,7 +76,7 @@ export default function Home() {
           <>
             {searchText && (
               <h2 className="font-medium text-[#666e75] text-xl mb-3">
-                Showing Resuls for <span className="text-[#222328]">{searchText}</span>:
+                Showing Results for <span className="text-[#222328]">{searchText}</span>:
               </h2>
             )}
             <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
