@@ -1,4 +1,5 @@
 "use client";
+import { analytics } from "@/types";
 import Script from "next/script";
 
 const Analytics = ({ GA_TRACKING_ID }: analytics) => {
