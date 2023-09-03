@@ -27,6 +27,7 @@ Imagine is a cutting-edge image generation tool that leverages the power of Dall
 2. **SetUp:**
 
     - Create a env file similar to env.sample file
+    
     - Run the Imagine tool:
         ```
         npm run dev
@@ -49,3 +50,12 @@ For any issues, feedback, or questions, please [open an issue](https://github.co
 ---
 
 Imagine is your gateway to endless creative possibilities. Unleash your imagination and start generating captivating images today!
+
+
+## To Dos -
+
+- Authentication based community sharing
+- Multiple Image generation feature
+- Image masking
+- Multiple variations of image
+- Multiple models to choose from for image generation
