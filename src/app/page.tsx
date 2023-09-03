@@ -12,31 +12,30 @@ export default function Home() {
 	const [searchedResults, setSearchedResults] = useState<any[]>([]);
 	let searchTimeout: any;
 
-	// const fetchPosts = async () => {
-	//   setLoading(true);
+	const fetchPosts = async () => {
+		setLoading(true);
+		try {
+			const response = await fetch("api/post", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 
-	//   try {
-	//     const response = await fetch('api/dalle', {
-	//       method: 'GET',
-	//       headers: {
-	//         'Content-Type': 'application/json',
-	//       },
-	//     });
+			if (response.ok) {
+				const result = await response.json();
+				setAllPosts(result.data.reverse());
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-	//     if (response.ok) {
-	//       const result = await response.json();
-	//       setAllPosts(result.data.reverse());
-	//     }
-	//   } catch (err) {
-	//     console.error(err);
-	//   } finally {
-	//     setLoading(false);
-	//   }
-	// };
-
-	// useEffect(() => {
-	//   fetchPosts();
-	// }, []);
+	useEffect(() => {
+		fetchPosts();
+	}, []);
 
 	const handleSearchChange = (e: any) => {
 		setSearchText(e.target.value);
@@ -54,7 +53,6 @@ export default function Home() {
 	};
 
 	return (
-		// <main className="sm:p-8 px-4 py-8 w-full bg-[#f9fafe] min-h-[calc(100vh-73px)]">
 		<section className="max-w-7xl mx-auto">
 			<div>
 				<h1 className="font-extrabold text-[#222328] text-[32px]">
@@ -110,7 +108,6 @@ export default function Home() {
 				)}
 			</div>
 		</section>
-		// </main>
 	);
 }
 
