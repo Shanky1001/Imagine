@@ -3,6 +3,7 @@ import Card from "@/components/Card/Card";
 import FormField from "@/components/FormField/FormField";
 import Loader from "@/components/Loader/Loader";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Home() {
 	const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function Home() {
 	const fetchPosts = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch("api/post", {
+			const response = await fetch("/api/post", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -26,8 +27,10 @@ export default function Home() {
 				const result = await response.json();
 				setAllPosts(result.data.reverse());
 			}
-		} catch (err) {
-			console.error(err);
+		} catch (err: any) {
+			toast.error(err, {
+				position: toast.POSITION.TOP_RIGHT,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -91,19 +94,28 @@ export default function Home() {
 								:
 							</h2>
 						)}
-						<div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
-							{searchText ? (
-								<RenderCards
-									data={searchedResults}
-									title="No Search Results Found"
-								/>
+						{searchText ? (
+							searchedResults.length === 0 ? (
+								<h2 className="mt-5 w-full text-center font-bold text-[#6469ff] text-xl uppercase">
+									No Search Results Found
+								</h2>
 							) : (
+								<div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
+									<RenderCards data={searchedResults} />
+								</div>
+							)
+						) : allPosts?.length === 0 ? (
+							<h2 className="mt-5 w-full text-center font-bold text-[#6469ff] text-xl uppercase">
+								No Posts Yet
+							</h2>
+						) : (
+							<div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
 								<RenderCards
 									data={allPosts}
 									title="No Posts Yet"
 								/>
-							)}
-						</div>
+							</div>
+						)}
 					</>
 				)}
 			</div>
@@ -111,14 +123,6 @@ export default function Home() {
 	);
 }
 
-const RenderCards = ({ data, title }: any) => {
-	if (data?.length > 0) {
-		return data.map((post: any) => <Card key={post._id} {...post} />);
-	}
-
-	return (
-		<h2 className="mt-5 font-bold text-[#6469ff] text-xl uppercase">
-			{title}
-		</h2>
-	);
+const RenderCards = ({ data }: any) => {
+	return data.map((post: any) => <Card key={post._id} {...post} />);
 };

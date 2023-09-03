@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NavBar from "@/components/NavBar/NavBar";
+import Toast from "@/components/Toast/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,9 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<NavBar />
 				<main className="sm:p-8 px-4 py-8 w-full bg-[#f9fafe] min-h-[calc(100vh-73px)]">
-				{children}
+					{children}
 				</main>
+				<Toast />
 			</body>
 		</html>
 	);
