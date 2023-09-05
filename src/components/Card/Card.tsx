@@ -1,9 +1,9 @@
-import React from 'react'
 import Image from 'next/image'
 import { downloadImage } from '@/utils'
 import { download } from '@/assets/images'
+import { card } from '@/types'
 
-const Card = ({ _id, name, prompt, photo }:any) => {
+const Card = ({ _id, name, prompt, photo }:card) => {
   return (
     <div className="rounded-xl group relative shadow-card hover:shadow-cardhover card">
         <Image src={photo} alt={prompt} className="w-full h-auto object-cover rounded-xl" />

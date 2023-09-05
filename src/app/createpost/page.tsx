@@ -10,11 +10,12 @@ import { useRouter } from "next/navigation";
 import { imageSizes } from "@/constants";
 import DropDown from "@/components/DropDown/DropDown";
 import { toast } from "react-toastify";
+import { formInterface } from "@/types";
 
 const CreatePost = () => {
 	const router = useRouter();
 
-	const [form, setForm] = useState({
+	const [form, setForm] = useState<formInterface>({
 		name: "",
 		prompt: "",
 		photo: "",

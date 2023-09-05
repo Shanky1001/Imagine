@@ -1,4 +1,6 @@
-const DropDown = ({ label, data, handleSelect, value }: any) => {
+import { dropDown } from "@/types";
+
+const DropDown = ({ label, data, handleSelect, value }: dropDown) => {
 	return (
 		<div className="">
 			<label
