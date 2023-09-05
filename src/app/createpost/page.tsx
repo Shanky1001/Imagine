@@ -19,7 +19,7 @@ const CreatePost = () => {
 		name: "",
 		prompt: "",
 		photo: "",
-		size: "",
+		size: "small",
 	});
 
 	const [generatingImg, setGeneratingImg] = useState(false);
@@ -52,7 +52,7 @@ const CreatePost = () => {
 				if (data.success) {
 					setForm({
 						...form,
-						photo: data.photo,
+						photo: `data:image/jpeg;base64,${data.photo}`,
 					});
 				} else {
 					toast.error(data.error, {
@@ -84,13 +84,22 @@ const CreatePost = () => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ ...form }),
+					body: JSON.stringify({
+						...form,
+						photo: form.photo.split(",")[1],
+					}),
 				});
-				await response.json();
-				toast.success("Success", {
-					position: toast.POSITION.TOP_RIGHT,
-				});
-				router.push("/");
+				const result = await response.json();
+				if(result.success){
+					toast.success("Success", {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+					router.push("/");
+				}else{
+					toast.error(result.error, {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+				}
 			} catch (err: any) {
 				toast.error(err, {
 					position: toast.POSITION.TOP_RIGHT,
@@ -165,7 +174,7 @@ const CreatePost = () => {
 							<img
 								src={form.photo}
 								alt={form.prompt}
-								className="w-full h-full object-contain" 
+								className="w-full h-full object-contain"
 								loading="lazy"
 							/>
 						</>

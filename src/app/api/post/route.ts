@@ -1,6 +1,7 @@
 import { Connect } from "@/dbconfig";
 import Posts from "@/models/post";
 import { NextRequest, NextResponse } from "next/server";
+import { getImageURL } from "@/utils";
 
 export const GET = async (req: NextRequest) => {
 	try {
@@ -23,21 +24,29 @@ export const POST = async (req: NextRequest) => {
 	try {
 		await Connect();
 		const { name, prompt, photo } = await req.json();
-		const newPost = await Posts.create({
-			name,
-			prompt,
-			photo,
-		});
-		if (newPost) {
-			return NextResponse.json({
-				success: true,
-				message: "Post created successfully",
-				data: newPost,
+		const url = await getImageURL(photo);
+		if (url !== "") {
+			const newPost = await Posts.create({
+				name,
+				prompt,
+				photo: url,
 			});
+			if (newPost) {
+				return NextResponse.json({
+					success: true,
+					message: "Post created successfully",
+					data: newPost,
+				});
+			} else {
+				return NextResponse.json({
+					success: false,
+					error: "Something went wrong while saving.",
+				});
+			}
 		} else {
 			return NextResponse.json({
 				success: false,
-				error: "Something went wrong while saving.",
+				error: "Something went wrong while generating image url.",
 			});
 		}
 	} catch (error) {
