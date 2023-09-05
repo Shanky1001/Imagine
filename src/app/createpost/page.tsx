@@ -90,12 +90,12 @@ const CreatePost = () => {
 					}),
 				});
 				const result = await response.json();
-				if(result.success){
+				if (result.success) {
 					toast.success("Success", {
 						position: toast.POSITION.TOP_RIGHT,
 					});
 					router.push("/");
-				}else{
+				} else {
 					toast.error(result.error, {
 						position: toast.POSITION.TOP_RIGHT,
 					});
@@ -161,6 +161,7 @@ const CreatePost = () => {
 					<div className="flex gap-5">
 						<button
 							type="button"
+							disabled={generatingImg || loading}
 							onClick={generateImage}
 							className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
 						>
@@ -203,6 +204,7 @@ const CreatePost = () => {
 						</p>
 						<button
 							type="submit"
+							disabled={loading}
 							className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
 						>
 							{loading

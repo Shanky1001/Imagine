@@ -52,3 +52,9 @@ export const imageSizes = [
 	{ id: "512x512", label: "medium" },
 	{ id: "1024x1024", label: "large" },
 ];
+
+export const loadingStates = {
+	INITIAL:"",
+	GENERATE: "generate",
+	SHARE: "share",
+};
