@@ -3,9 +3,10 @@ import Posts from "@/models/post";
 import { NextRequest, NextResponse } from "next/server";
 import { getImageURL } from "@/utils";
 
+Connect();
+
 export const GET = async (req: NextRequest) => {
 	try {
-		await Connect();
 		const posts = await Posts.find({});
 		if (posts) {
 			return NextResponse.json({ success: true, data: posts });
@@ -22,7 +23,6 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
 	try {
-		await Connect();
 		const { name, prompt, photo } = await req.json();
 		const url = await getImageURL(photo);
 		if (url !== "") {

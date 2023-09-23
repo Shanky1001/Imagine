@@ -119,7 +119,7 @@ const CreatePost = () => {
 	};
 
 	return (
-		<section className="max-w-7xl mx-auto bg-[#f9fafe]">
+		<section className="max-w-7xl relative mx-auto bg-[#f9fafe]">
 			<div>
 				<h1 className="font-extrabold text-[#222328] text-[32px]">
 					Create
@@ -172,11 +172,13 @@ const CreatePost = () => {
 				<div className="relative mt-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
 					{form.photo ? (
 						<>
-							<img
+							<Image
 								src={form.photo}
 								alt={form.prompt}
 								className="w-full h-full object-contain"
 								loading="lazy"
+								width={1024}
+								height={1024}
 							/>
 						</>
 					) : (
@@ -214,6 +216,11 @@ const CreatePost = () => {
 					</div>
 				)}
 			</form>
+			{loading && (
+				<div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(91,81,81,0.5)] rounded-lg">
+					<Loader />
+				</div>
+			)}
 		</section>
 	);
 };

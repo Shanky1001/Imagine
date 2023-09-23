@@ -66,8 +66,6 @@ git push -u origin <your_branch_name>
 
 **15** Voila! You have made a PR to the awesome-developer-portfolio project. Sit back patiently and relax while the your PR is reviewed.
 
-In case of any help, please free to contact me via mail @ ac.chauhan1102@gmail.com
-
 ## ❤️ Project Admin
 
 | <a href="https://github.com/shanky1001"><img src="https://media.licdn.com/dms/image/D4D03AQEnxtujoCZiig/profile-displayphoto-shrink_800_800/0/1668795840784?e=1700697600&v=beta&t=1SB6e1aVZ_B3YqqKTvY1VLxDmGQVsDz99MS_1duv4g4" width=150px height=150px /></a> |
