@@ -2,6 +2,7 @@
 import Card from "@/components/Card/Card";
 import FormField from "@/components/FormField/FormField";
 import Loader from "@/components/Loader/Loader";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -57,6 +58,9 @@ export default function Home() {
 
 	return (
 		<section className="max-w-7xl mx-auto">
+			<Head>
+				<title>Community</title>
+			</Head>
 			<div>
 				<h1 className="font-extrabold text-[#222328] text-[32px]">
 					The Community Showcase
