@@ -8,15 +8,15 @@ const NavBar = () => {
 		<header className="w-full flex justify-between items-center bg-stone-300 sm:px-8 px-4 py-4 border-b border-b-[#e6ebf4]">
 			<Link href="/">
 				<h3 className="text-black text-xl font-bold font-inter">
-					Imagine
+					Imagine AI
 				</h3>
 			</Link>
-			{pathName !== "/createpost" && (
+			{pathName !== "/community" && (
 				<Link
-					href="/createpost"
+					href="/community"
 					className="font-inter font-medium bg-[#6469ff] text-white px-4 py-2 rounded-md"
 				>
-					Create Image
+					View Community 
 				</Link>
 			)}
 		</header>

@@ -1,128 +1,221 @@
 "use client";
-import Card from "@/components/Card/Card";
+
 import FormField from "@/components/FormField/FormField";
+import { getRandomPrompt } from "@/utils";
+import React, { useState } from "react";
+import Image from "next/image";
+import { preview } from "@/assets/images";
 import Loader from "@/components/Loader/Loader";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { imageSizes } from "@/constants";
+import DropDown from "@/components/DropDown/DropDown";
 import { toast } from "react-toastify";
+import { formInterface } from "@/types";
 
-export default function Home() {
+const CreatePost = () => {
+	const router = useRouter();
+
+	const [form, setForm] = useState<formInterface>({
+		name: "",
+		prompt: "",
+		photo: "",
+		size: "small",
+	});
+
+	const [generatingImg, setGeneratingImg] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [allPosts, setAllPosts] = useState<any[]>([]);
 
-	const [searchText, setSearchText] = useState("");
-	const [searchedResults, setSearchedResults] = useState<any[]>([]);
-	let searchTimeout: any;
+	const handleChange = (e: any) =>
+		setForm({ ...form, [e.target.name]: e.target.value });
 
-	const fetchPosts = async () => {
-		setLoading(true);
-		try {
-			const response = await fetch("/api/post", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+	const handleSurpriseMe = () => {
+		const randomPrompt = getRandomPrompt(form.prompt);
+		setForm({ ...form, prompt: randomPrompt });
+	};
 
-			if (response.ok) {
-				const result = await response.json();
-				setAllPosts(result.data.reverse());
+	const generateImage = async () => {
+		if (form.prompt) {
+			try {
+				setGeneratingImg(true);
+				const response = await fetch("/api/dalle", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						prompt: form.prompt,
+						size: form.size,
+					}),
+				});
+
+				const data = await response.json();
+				if (data.success) {
+					setForm({
+						...form,
+						photo: `data:image/jpeg;base64,${data.photo}`,
+					});
+				} else {
+					toast.error(data.error, {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+				}
+			} catch (err: any) {
+				toast.error(err, {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} finally {
+				setGeneratingImg(false);
 			}
-		} catch (err: any) {
-			toast.error(err, {
+		} else {
+			toast.warning("Please provide proper prompt", {
 				position: toast.POSITION.TOP_RIGHT,
 			});
-		} finally {
-			setLoading(false);
 		}
 	};
 
-	useEffect(() => {
-		fetchPosts();
-	}, []);
+	const handleSubmit = async (e: any) => {
+		e.preventDefault();
 
-	const handleSearchChange = (e: any) => {
-		setSearchText(e.target.value);
-		clearTimeout(searchTimeout);
-		searchTimeout = setTimeout(() => {
-			const searchResult: any[] = allPosts.filter(
-				(item: any) =>
-					item.name
-						.toLowerCase()
-						.includes(searchText.toLowerCase()) ||
-					item.prompt.toLowerCase().includes(searchText.toLowerCase())
-			);
-			setSearchedResults(searchResult);
-		}, 500);
+		if (form.prompt && form.photo) {
+			setLoading(true);
+			try {
+				const response = await fetch("/api/post", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						...form,
+						photo: form.photo.split(",")[1],
+					}),
+				});
+				const result = await response.json();
+				if (result.success) {
+					toast.success("Success", {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+					router.push("/community");
+				} else {
+					toast.error(result.error, {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+				}
+			} catch (err: any) {
+				toast.error(err, {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} finally {
+				setLoading(false);
+			}
+		} else {
+			toast.error("Please generate an image with proper details", {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		}
+	};
+
+	const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setForm({ ...form, size: e.target.value });
 	};
 
 	return (
-		<section className="max-w-7xl mx-auto">
+		<section className="max-w-7xl mx-auto bg-[#f9fafe]">
 			<div>
 				<h1 className="font-extrabold text-[#222328] text-[32px]">
-					The Community Showcase
+					Create
 				</h1>
-				<p className="mt-2 text-[#666e75] text-[16px]">
-					Delve into a captivating compilation of imaginative and
-					visually stunning images crafted by the DALL-E AI.
+				<p className="mt-2 text-[#666e75] text-[14px] max-w-[700px]">
+					Generate an artistic image with Imagine AI and share it with
+					the community for their views.
 				</p>
 			</div>
 
-			<div className="mt-16">
-				<FormField
-					labelName="Search posts"
-					type="text"
-					name="text"
-					placeholder="Search something..."
-					value={searchText}
-					handleChange={handleSearchChange}
-				/>
-			</div>
+			<form className="mt-12 max-w-3xl" onSubmit={handleSubmit}>
+				<div className="flex flex-col gap-5">
+					<FormField
+						labelName="Your Name"
+						type="text"
+						name="name"
+						placeholder="Ex. John Doe"
+						value={form.name}
+						handleChange={handleChange}
+					/>
 
-			<div className="mt-10">
-				{loading ? (
-					<div className="flex justify-center items-center">
-						<Loader />
+					<FormField
+						labelName="Prompt"
+						type="text"
+						name="prompt"
+						placeholder="A pokemon that throw fire..."
+						value={form.prompt}
+						handleChange={handleChange}
+						isSurpriseMe
+						handleSurpriseMe={handleSurpriseMe}
+					/>
+
+					<DropDown
+						label={"Select Image Size"}
+						data={imageSizes}
+						value={form.size}
+						handleSelect={handleSelect}
+					/>
+					<div className="flex gap-5">
+						<button
+							type="button"
+							disabled={generatingImg || loading}
+							onClick={generateImage}
+							className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						>
+							{generatingImg ? "Generating..." : "Generate Image"}
+						</button>
 					</div>
-				) : (
-					<>
-						{searchText && (
-							<h2 className="font-medium text-[#666e75] text-xl mb-3">
-								Showing Results for{" "}
-								<span className="text-[#222328]">
-									{searchText}
-								</span>
-								:
-							</h2>
-						)}
-						{searchText ? (
-							searchedResults.length === 0 ? (
-								<h2 className="mt-5 w-full text-center font-bold text-[#6469ff] text-xl uppercase">
-									No Search Results Found
-								</h2>
-							) : (
-								<div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
-									<RenderCards data={searchedResults} />
-								</div>
-							)
-						) : allPosts?.length === 0 ? (
-							<h2 className="mt-5 w-full text-center font-bold text-[#6469ff] text-xl uppercase">
-								No Posts Yet
-							</h2>
-						) : (
-							<div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
-								<RenderCards
-									data={allPosts}
-									title="No Posts Yet"
-								/>
-							</div>
-						)}
-					</>
+				</div>
+				<div className="relative mt-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
+					{form.photo ? (
+						<>
+							<img
+								src={form.photo}
+								alt={form.prompt}
+								className="w-full h-full object-contain"
+								loading="lazy"
+							/>
+						</>
+					) : (
+						<>
+							<Image
+								src={preview}
+								alt="preview"
+								className="w-9/12 h-9/12 object-contain opacity-40"
+							/>
+						</>
+					)}
+
+					{generatingImg && (
+						<div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
+							<Loader />
+						</div>
+					)}
+				</div>
+				{form.photo && (
+					<div className="mt-10">
+						<p className="mt-2 text-[#2f3235] text-[14px]">
+							** Once you have crafted the desired image, feel
+							free to share it among the community for their
+							appreciation. **
+						</p>
+						<button
+							type="submit"
+							disabled={loading}
+							className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						>
+							{loading
+								? "Sharing..."
+								: "Share with the Community"}
+						</button>
+					</div>
 				)}
-			</div>
+			</form>
 		</section>
 	);
-}
-
-const RenderCards = ({ data }: any) => {
-	return data.map((post: any) => <Card key={post._id} {...post} />);
 };
+
+export default CreatePost;
