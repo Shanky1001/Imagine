@@ -20,7 +20,7 @@ Imagine is a cutting-edge image generation tool that leverages the power of Dall
 
     - Clone this repository:
         ```
-        git clone https://github.com/Shanky1001/Imagine.git
+        git clone https://github.com/Shanky1001/Imagine-ai.git
         ```
     - Install the required dependencies.
 
@@ -45,7 +45,7 @@ Imagine is a cutting-edge image generation tool that leverages the power of Dall
 
 ## Support
 
-For any issues, feedback, or questions, please [open an issue](https://github.com/Shanky1001/Imagine.git/issues). We're here to assist you!
+For any issues, feedback, or questions, please [open an issue](https://github.com/Shanky1001/Imagine-ai.git/issues). We're here to assist you!
 
 ---
 
